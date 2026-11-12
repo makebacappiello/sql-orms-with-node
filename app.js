@@ -5,15 +5,22 @@ const sequelize = new Sequelize({
 });
 // Movie model
 class Movie extends Sequelize.Model {}
-Movie.init({
-  title: Sequelize.STRING,
-}); //defines a new table in the database where sequelize will look for information in the Movies table.
-
-// async IIFE--- immediately invoked function expression--in JavaScript is a function that is called right after it is created. We wrap the function in parentheses to make sure it's treated as an expression. After the function, we add another set of parentheses `()` to run it immediately.
+Movie.init(
+  {
+    title: Sequelize.STRING,
+  },
+  { sequelize }
+);
 (async () => {
+  // Sync 'all' table
+  await sequelize.sync({ force: true });
+
   try {
-    await sequelize.authenticate();
-    console.log("Connection to the database successful!");
+    // Instance of the Movie class represents a database row
+    const movie = await Movie.create({
+      title: "Toy Story",
+    });
+    console.log(movie.toJSON());
   } catch (error) {
     console.error("Error connecting to the database: ", error);
   }
